@@ -82,7 +82,16 @@ public class EntityDireWolf extends EntityMob implements IEnderZooMob {
     int i = MathHelper.floor_double(this.posX);
     int j = MathHelper.floor_double(this.boundingBox.minY);
     int k = MathHelper.floor_double(this.posZ);
-    return this.worldObj.getBlock(i, j - 1, k) == Blocks.grass && this.worldObj.getFullBlockLightValue(i, j, k) > 8 && super.getCanSpawnHere();
+    // Only allow spawning if on top of a snow block or a snow layer
+    /*
+    if (this.worldObj.getBlock(i, j - 1, k) == Blocks.snow) {
+    	System.out.println("Dire Wolf spawning on snow block at " + i + " " + j + " " + k );
+    }
+    if (this.worldObj.getBlock(i, j, k) == Blocks.snow_layer) {
+    	System.out.println("Dire Wolf spawning on snow layer at " + i + " " + j + " " + k);
+    }
+    */
+    return (this.worldObj.getBlock(i, j - 1, k) == Blocks.snow || this.worldObj.getBlock(i, j, k) == Blocks.snow_layer) && this.worldObj.getFullBlockLightValue(i, j, k) > 8 && super.getCanSpawnHere();
   }
 
   public boolean isAngry() {
@@ -122,21 +131,45 @@ public class EntityDireWolf extends EntityMob implements IEnderZooMob {
     playSound("mob.wolf.step", 0.15F, 1.0F);
   }
 
+  
+  static long nextprinttime=0;
+  
+  
   @Override
   protected String getLivingSound() {
     if (isAngry()) {
       return SND_GROWL;
     }
-    if (EntityUtil.isPlayerWithinRange(this, 12)) {
+    if (EntityUtil.isPlayerWithinRange(this, 18)) {
       return SND_GROWL;
     }
-    boolean howl = (packHowl > 0 || rand.nextFloat() <= Config.direWolfHowlChance) && worldObj.getTotalWorldTime() > (lastHowl + 10);
+    boolean howl = false;
+    boolean isNight = (worldObj.getWorldTime() > 15000) && (worldObj.getWorldTime() < 20000);
+    boolean isFullMoon = (worldObj.getCurrentMoonPhaseFactor() == 1.0) || (worldObj.getCurrentMoonPhaseFactor() == 0.75);
+
+
+    if( worldObj.getTotalWorldTime() > nextprinttime) { 
+    	System.out.println("isNight: " + isNight + "  isFullMoon: " + isFullMoon + " worldTime: " + worldObj.getTotalWorldTime() 
+    	+ " lastHowl: " + lastHowl + " packHowl: " + packHowl);
+    	nextprinttime = worldObj.getTotalWorldTime() + 200;
+    }
+    
+    if ((packHowl > 0) && worldObj.getTotalWorldTime() > (lastHowl + 10) ) {
+    	howl = true;
+    } else {
+    	// Not a pack howl, delay based on config
+        if (worldObj.getTotalWorldTime() > (Config.direWolfHowlDelay + lastHowl) 
+        		&& rand.nextFloat() <= (Config.direWolfHowlChance * ((isNight) ? ((isFullMoon) ? 4 : 2) : 1)  ) ) {
+        	howl = true;
+        }
+    }
     if (howl) {
-      if (packHowl <= 0 && rand.nextFloat() <= 0.6) {
-        packHowl = Config.direWolfPackHowlAmount;
+      if (packHowl <= 0 && rand.nextFloat() <= (Config.direWolfPackHowlChance * ((isNight) ? ((isFullMoon) ? 4 : 1) : 1)) ) {
+        packHowl = rand.nextInt(Config.direWolfPackHowlAmount * ((isFullMoon) ? 2 : 1) + 1);
       }
       lastHowl = worldObj.getTotalWorldTime();
       packHowl = Math.max(packHowl - 1, 0);
+      System.out.println("Howling");
       return SND_HOWL;
     } else {
       return SND_GROWL;
