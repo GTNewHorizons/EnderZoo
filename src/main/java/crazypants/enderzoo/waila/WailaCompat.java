@@ -6,9 +6,14 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaEntityAccessor;
 import mcp.mobius.waila.api.IWailaEntityProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+
 import crazypants.enderzoo.entity.IEnderZooMob;
 
 public class WailaCompat implements IWailaEntityProvider {
@@ -43,4 +48,10 @@ public class WailaCompat implements IWailaEntityProvider {
   public List<String> getWailaTail(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
     return null; // not used
   }
+
+  @Override
+  public NBTTagCompound getNBTData(EntityPlayerMP player, Entity ent, NBTTagCompound tag, World world) {
+    return null;
+  }
+
 }
