@@ -128,13 +128,14 @@ public final class Config {
   public static final Section sectionDireWolf = new Section("Dire Wolf", "direWolf");
   public static boolean direWolfEnabled = true;
   public static boolean direWolfPackAttackEnabled = true;
-  public static double direWolfHealth = 20;
-  public static double direWolfAttackDamage = 10;
+  public static double direWolfHealth = 16;
+  public static double direWolfAttackDamage = 8;
   public static double direWolfHardAttackModifier = 1;
-  public static double direWolfAggresiveRange = 4;
+  public static double direWolfAggresiveRange = 3;
   public static double direWolfHowlVolumeMult = 8;
+  public static int direWolfHowlDelay = 18000;
   public static double direWolfHowlChance = 0.05;
-  public static double direWolfPackHowlChance = 0.5;
+  public static double direWolfPackHowlChance = 0.2;
   public static int direWolfPackHowlAmount = 8;
 
   public static final Section sectionDireSlime = new Section("Dire Slime", "direSlime");
@@ -336,12 +337,14 @@ public final class Config {
         "If a player gets within this range they will be attacked").getDouble(direWolfAggresiveRange);
     direWolfHowlVolumeMult = config.get(sectionDireWolf.name, "direWolfHowlVolumeMult", direWolfHowlVolumeMult,
         "The volume multiplier for the dire wolf's howl. 12 is default.").getDouble();
+    direWolfHowlDelay = config.get(sectionDireWolf.name, "direWolfHowlDelay", direWolfHowlDelay,
+            "Minimum time, in ticks, between dire wolf howls. This does not include pack howls. Defaults to 15 minutes").getInt();
     direWolfHowlChance = config.get(sectionDireWolf.name, "direWolfHowlChance", direWolfHowlChance,
-        "The chance a dire wolf will howl when it is asked to play a sound. Defaults to 0.1 (10%)").getDouble();
+        "The chance a dire wolf will howl when it is asked to play a sound. Doubled at night, and doubled again near full moon. Defaults to 0.05 (5%)").getDouble();
     direWolfPackHowlChance = config.get(sectionDireWolf.name, "direWolfPackHowlChance", direWolfPackHowlChance,
-        "The chance that when a dire wolf howls, nearby dire wolves will \"join in\" to a pack howl. Defaults to 0.6 (60%)").getDouble();
+        "The chance that when a dire wolf howls, nearby dire wolves will \"join in\" to a pack howl. 4x near full moon. Defaults to 0.2 (20%)").getDouble();
     direWolfPackHowlAmount = config.get(sectionDireWolf.name, "direWolfPackHowlAmount", direWolfPackHowlAmount,
-        "The amount of other dire wolves that will \"join in\" with the initial howl, per pack howl.").getInt();
+        "The amount of other dire wolves that will \"join in\" with the initial howl, per pack howl. 2x near full moon.").getInt();
 
     direSlimeEnabled = config.getBoolean("direSlimeEnabled", sectionDireSlime.name, direSlimeEnabled, "If false Dire Slime will be disabled");
     direSlimeAttackDamage = config.get(sectionDireSlime.name, "direSlimeAttackDamage", direSlimeAttackDamage, "Base attack damage of the dire slime.")
