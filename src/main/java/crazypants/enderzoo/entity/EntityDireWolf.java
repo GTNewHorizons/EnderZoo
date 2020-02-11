@@ -1,8 +1,10 @@
 package crazypants.enderzoo.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
@@ -14,9 +16,14 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import crazypants.enderzoo.config.Config;
 import crazypants.enderzoo.entity.ai.EntityAIAttackOnCollideAggressive;
@@ -132,9 +139,8 @@ public class EntityDireWolf extends EntityMob implements IEnderZooMob {
   }
 
   
-  static long nextprinttime=0;
-  
-  
+  // static long nextprinttime=0;
+    
   @Override
   protected String getLivingSound() {
     if (isAngry()) {
@@ -144,15 +150,16 @@ public class EntityDireWolf extends EntityMob implements IEnderZooMob {
       return SND_GROWL;
     }
     boolean howl = false;
-    boolean isNight = (worldObj.getWorldTime() > 15000) && (worldObj.getWorldTime() < 20000);
+    boolean isNight = (worldObj.getWorldTime() > 15000) && (worldObj.getWorldTime() < 21000);
     boolean isFullMoon = (worldObj.getCurrentMoonPhaseFactor() == 1.0) || (worldObj.getCurrentMoonPhaseFactor() == 0.75);
 
-
+/*
     if( worldObj.getTotalWorldTime() > nextprinttime) { 
     	System.out.println("isNight: " + isNight + "  isFullMoon: " + isFullMoon + " worldTime: " + worldObj.getTotalWorldTime() 
     	+ " lastHowl: " + lastHowl + " packHowl: " + packHowl);
     	nextprinttime = worldObj.getTotalWorldTime() + 200;
     }
+*/
     
     if ((packHowl > 0) && worldObj.getTotalWorldTime() > (lastHowl + 10) ) {
     	howl = true;
@@ -207,8 +214,40 @@ public class EntityDireWolf extends EntityMob implements IEnderZooMob {
 
   @Override
   protected Item getDropItem() {
-    return Item.getItemById(-1);
+    return Items.bone;
   }
+  
+/// Called when this entity is killed.
+  @Override
+  protected void dropFewItems(boolean recentlyHit, int looting) {
+	  if (recentlyHit && (this.rand.nextInt(3) == 0 || this.rand.nextInt(1 + looting) > 0)) {
+      for (int i = this.rand.nextInt(3 + looting); i-- > 0;) {
+        this.dropItem(Items.bone, 1);
+      }      
+    }
+  }
+
+  public static ArrayList<String> collarNames = new ArrayList<String>();
+  {
+  	int count;
+	
+  	//Read collar names count
+  	count = Integer.parseInt(StatCollector.translateToLocal( "entity.enderzoo.DireWolf.tags.count"));
+  	//Loop through filling up with collar names 
+  	for(;count>0;count--) {
+  		collarNames.add( new String( StatCollector.translateToLocal( "entity.enderzoo.DireWolf.tags." + Integer.toString(count)) ));
+  	}
+  }
+  
+  /// Called 2.5% of the time when this entity is killed. 20% chance that superRare == 1, otherwise superRare == 0.
+  @Override
+  protected void dropRareDrop(int superRare) {
+    ItemStack collar = new ItemStack(Items.name_tag,1);
+    int messageId = rand.nextInt( collarNames.size() );
+    collar.setStackDisplayName(collarNames.get(messageId));
+    this.entityDropItem(collar, 1.0F);
+  }
+
 
   public float getTailRotation() {
     if (isAngry()) {
