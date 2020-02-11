@@ -21,3 +21,6 @@ bin
 *.bak
 /run
 *.bat
+EnderZoo.iml
+EnderZoo.ipr
+EnderZoo.iws
