@@ -128,10 +128,10 @@ public final class Config {
   public static final Section sectionDireWolf = new Section("Dire Wolf", "direWolf");
   public static boolean direWolfEnabled = true;
   public static boolean direWolfPackAttackEnabled = true;
-  public static double direWolfHealth = 20;
-  public static double direWolfAttackDamage = 10;
+  public static double direWolfHealth = 16;
+  public static double direWolfAttackDamage = 8;
   public static double direWolfHardAttackModifier = 1;
-  public static double direWolfAggresiveRange = 4;
+  public static double direWolfAggresiveRange = 3;
   public static double direWolfHowlVolumeMult = 8;
   public static int direWolfHowlDelay = 18000;
   public static double direWolfHowlChance = 0.05;
