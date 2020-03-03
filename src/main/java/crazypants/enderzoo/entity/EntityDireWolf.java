@@ -176,7 +176,6 @@ public class EntityDireWolf extends EntityMob implements IEnderZooMob {
       }
       lastHowl = worldObj.getTotalWorldTime();
       packHowl = Math.max(packHowl - 1, 0);
-      System.out.println("Howling");
       return SND_HOWL;
     } else {
       return SND_GROWL;
