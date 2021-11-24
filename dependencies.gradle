@@ -1,0 +1,7 @@
+// Add your dependencies here
+
+dependencies {
+    compileOnly("com.github.GTNewHorizons:waila:master-SNAPSHOT:api") {
+        transitive = false
+    }
+}

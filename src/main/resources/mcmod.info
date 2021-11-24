@@ -1,10 +1,10 @@
 [
 {
-  "modid": "EnderZoo",
-  "name": "Ender Zoo",
+  "modid": "${modId}",
+  "name": "${modName}",
   "description": "More Mobs",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
+  "version": "${modVersion}",
+  "mcversion": "${minecraftVersion}",
   "url": "http://enderio.com",
   "updateUrl": "",
   "authors": [
