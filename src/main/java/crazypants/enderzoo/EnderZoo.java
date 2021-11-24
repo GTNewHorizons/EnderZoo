@@ -39,7 +39,7 @@ public class EnderZoo {
 
   public static final String MODID = "EnderZoo";
   public static final String MOD_NAME = "Ender Zoo";
-  public static final String VERSION = "@VERSION@";
+  public static final String VERSION = "GRADLETOKEN_VERSION";
 
   @Instance(MODID)
   public static EnderZoo instance;
