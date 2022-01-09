@@ -4,6 +4,7 @@ import static crazypants.enderzoo.EnderZoo.MODID;
 import static crazypants.enderzoo.EnderZoo.MOD_NAME;
 import static crazypants.enderzoo.EnderZoo.VERSION;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -130,20 +131,22 @@ public class EnderZoo {
   }
 
   private void addRecipes() {
-    if (Config.confusingChargeEnabled) {
-      OreDictionary.registerOre("sand", new ItemStack(Blocks.sand, 1, OreDictionary.WILDCARD_VALUE));
-      ItemStack cc = new ItemStack(blockConfusingCharge);
-      GameRegistry.addRecipe(new ShapedOreRecipe(cc, "csc", "sgs", "csc", 'c', itemConfusingDust, 's', "sand", 'g', Items.gunpowder));
-    }
-    if (Config.enderChargeEnabled) {
-      OreDictionary.registerOre("sand", new ItemStack(Blocks.sand, 1, OreDictionary.WILDCARD_VALUE));
-      ItemStack cc = new ItemStack(blockEnderCharge);
-      GameRegistry.addRecipe(new ShapedOreRecipe(cc, "csc", "sgs", "csc", 'c', itemEnderFragment, 's', "sand", 'g', Items.gunpowder));
-    }
-    if (Config.concussionChargeEnabled) {
-      OreDictionary.registerOre("sand", new ItemStack(Blocks.sand, 1, OreDictionary.WILDCARD_VALUE));
-      ItemStack cc = new ItemStack(blockConcussionCharge);
-      GameRegistry.addRecipe(new ShapedOreRecipe(cc, "eee", "sgs", "ccc", 'c', itemConfusingDust, 'e', itemEnderFragment, 's', "sand", 'g', Items.gunpowder));
+    if (!Loader.isModLoaded("dreamcraft")) {
+      if (Config.confusingChargeEnabled) {
+        OreDictionary.registerOre("sand", new ItemStack(Blocks.sand, 1, OreDictionary.WILDCARD_VALUE));
+        ItemStack cc = new ItemStack(blockConfusingCharge);
+        GameRegistry.addRecipe(new ShapedOreRecipe(cc, "csc", "sgs", "csc", 'c', itemConfusingDust, 's', "sand", 'g', Items.gunpowder));
+      }
+      if (Config.enderChargeEnabled) {
+        OreDictionary.registerOre("sand", new ItemStack(Blocks.sand, 1, OreDictionary.WILDCARD_VALUE));
+        ItemStack cc = new ItemStack(blockEnderCharge);
+        GameRegistry.addRecipe(new ShapedOreRecipe(cc, "csc", "sgs", "csc", 'c', itemEnderFragment, 's', "sand", 'g', Items.gunpowder));
+      }
+      if (Config.concussionChargeEnabled) {
+        OreDictionary.registerOre("sand", new ItemStack(Blocks.sand, 1, OreDictionary.WILDCARD_VALUE));
+        ItemStack cc = new ItemStack(blockConcussionCharge);
+        GameRegistry.addRecipe(new ShapedOreRecipe(cc, "eee", "sgs", "ccc", 'c', itemConfusingDust, 'e', itemEnderFragment, 's', "sand", 'g', Items.gunpowder));
+      }
     }
     GameRegistry.addShapedRecipe(new ItemStack(Items.ender_pearl), " f ", "fff", " f ", 'f', itemEnderFragment);
 
