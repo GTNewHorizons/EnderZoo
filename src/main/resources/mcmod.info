@@ -5,7 +5,7 @@
   "description": "More Mobs",
   "version": "${modVersion}",
   "mcversion": "${minecraftVersion}",
-  "url": "http://enderio.com",
+  "url": "https://www.enderio.com",
   "updateUrl": "",
   "authors": [
     "crazypants"
