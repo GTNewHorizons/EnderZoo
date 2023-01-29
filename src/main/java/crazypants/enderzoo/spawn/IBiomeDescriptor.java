@@ -4,10 +4,10 @@ import net.minecraftforge.common.BiomeDictionary;
 
 public interface IBiomeDescriptor {
 
-  BiomeDictionary.Type getType();
+    BiomeDictionary.Type getType();
 
-  String getName();
+    String getName();
 
-  boolean isExclude();
+    boolean isExclude();
 
 }

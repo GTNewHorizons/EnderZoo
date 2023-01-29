@@ -7,22 +7,22 @@ import net.minecraft.world.World;
 
 public interface ISpawnEntry {
 
-  String getId();
+    String getId();
 
-  String getMobName();
+    String getMobName();
 
-  EnumCreatureType getCreatureType();
+    EnumCreatureType getCreatureType();
 
-  int getRate();
+    int getRate();
 
-  int getMaxGroupSize();
+    int getMaxGroupSize();
 
-  int getMinGroupSize();
+    int getMinGroupSize();
 
-  boolean isRemove();
+    boolean isRemove();
 
-  List<IBiomeFilter> getFilters();
+    List<IBiomeFilter> getFilters();
 
-  boolean canSpawnInDimension(World world);
+    boolean canSpawnInDimension(World world);
 
 }

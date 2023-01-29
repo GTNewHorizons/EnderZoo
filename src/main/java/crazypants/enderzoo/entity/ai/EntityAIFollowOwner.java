@@ -3,77 +3,78 @@ package crazypants.enderzoo.entity.ai;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
+
 import crazypants.enderzoo.entity.IOwnable;
 
 public class EntityAIFollowOwner extends EntityAIBase {
 
-  /** The child that is following its parent. */
-  IOwnable<? extends EntityCreature, ? extends EntityLivingBase> owned;
-  double followSpeed;
-  private int pathingTimer;
+    /** The child that is following its parent. */
+    IOwnable<? extends EntityCreature, ? extends EntityLivingBase> owned;
+    double followSpeed;
+    private int pathingTimer;
 
-  private double minDistanceSq;
-  private double maxDistanceSq;
+    private double minDistanceSq;
+    private double maxDistanceSq;
 
-  public EntityAIFollowOwner(IOwnable<? extends EntityCreature, ? extends EntityLivingBase> owned, double minDist, double maxDist, double followSpeed) {
-    this.owned = owned;
-    minDistanceSq = minDist * minDist;
-    maxDistanceSq = maxDist * maxDist;
-    this.followSpeed = followSpeed;
-  }
-
-  @Override
-  public boolean shouldExecute() {
-    if (owned.getOwner() == null) {
-      return false;
+    public EntityAIFollowOwner(IOwnable<? extends EntityCreature, ? extends EntityLivingBase> owned, double minDist,
+            double maxDist, double followSpeed) {
+        this.owned = owned;
+        minDistanceSq = minDist * minDist;
+        maxDistanceSq = maxDist * maxDist;
+        this.followSpeed = followSpeed;
     }
-    return getDistanceSqFromOwner() > maxDistanceSq;
-  }
 
-  @Override
-  public boolean continueExecuting() {
-    EntityLivingBase owner = owned.getOwner();
-    if (owner == null || !owner.isEntityAlive()) {
-      return false;
+    @Override
+    public boolean shouldExecute() {
+        if (owned.getOwner() == null) {
+            return false;
+        }
+        return getDistanceSqFromOwner() > maxDistanceSq;
     }
-    return !owned.asEntity().getNavigator().noPath();
-  }
 
-  public boolean isWithinTargetDistanceFromOwner() {
-    if (owned.getOwner() == null) {
-      return true;
+    @Override
+    public boolean continueExecuting() {
+        EntityLivingBase owner = owned.getOwner();
+        if (owner == null || !owner.isEntityAlive()) {
+            return false;
+        }
+        return !owned.asEntity().getNavigator().noPath();
     }
-    double distance = getDistanceSqFromOwner();
-    return distance >= minDistanceSq && distance <= maxDistanceSq;
-  }
 
-  private double getDistanceSqFromOwner() {
-    double distance = owned.asEntity().getDistanceSqToEntity(owned.getOwner());
-    return distance;
-  }
-
-  @Override
-  public void startExecuting() {
-    pathingTimer = 0;
-  }
-
-  @Override
-  public void resetTask() {
-  }
-
-  @Override
-  public void updateTask() {
-    EntityLivingBase owner = owned.getOwner();
-    if (owner == null) {
-      return;
+    public boolean isWithinTargetDistanceFromOwner() {
+        if (owned.getOwner() == null) {
+            return true;
+        }
+        double distance = getDistanceSqFromOwner();
+        return distance >= minDistanceSq && distance <= maxDistanceSq;
     }
-    double distance = getDistanceSqFromOwner();
-    if (distance < minDistanceSq) {
-      owned.asEntity().getNavigator().clearPathEntity();
+
+    private double getDistanceSqFromOwner() {
+        double distance = owned.asEntity().getDistanceSqToEntity(owned.getOwner());
+        return distance;
     }
-    if (--pathingTimer <= 0) {
-      pathingTimer = 10;
-      owned.asEntity().getNavigator().tryMoveToEntityLiving(owned.getOwner(), followSpeed);
+
+    @Override
+    public void startExecuting() {
+        pathingTimer = 0;
     }
-  }
+
+    @Override
+    public void resetTask() {}
+
+    @Override
+    public void updateTask() {
+        EntityLivingBase owner = owned.getOwner();
+        if (owner == null) {
+            return;
+        }
+        double distance = getDistanceSqFromOwner();
+        if (distance < minDistanceSq) {
+            owned.asEntity().getNavigator().clearPathEntity();
+        }
+        if (--pathingTimer <= 0) {
+            pathingTimer = 10;
+            owned.asEntity().getNavigator().tryMoveToEntityLiving(owned.getOwner(), followSpeed);
+        }
+    }
 }

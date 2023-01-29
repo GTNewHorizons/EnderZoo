@@ -5,10 +5,10 @@ import net.minecraft.entity.EntityLivingBase;
 
 public interface IOwnable<O extends EntityCreature, T extends EntityLivingBase> {
 
-  T getOwner();
+    T getOwner();
 
-  void setOwner(T owner);
+    void setOwner(T owner);
 
-  O asEntity();
+    O asEntity();
 
 }

@@ -5,24 +5,23 @@ import java.util.Map;
 
 public class ChargeRegister {
 
-  public static ChargeRegister instance = new ChargeRegister();
+    public static ChargeRegister instance = new ChargeRegister();
 
-  private Map<Integer, ICharge> charges = new HashMap<Integer, ICharge>();
+    private Map<Integer, ICharge> charges = new HashMap<Integer, ICharge>();
 
-  private int nextId = 0;
+    private int nextId = 0;
 
-  private ChargeRegister() {
-  }
+    private ChargeRegister() {}
 
-  public void registerCharge(ICharge charge) {
-    charge.setID(nextId);
-    charges.put(nextId, charge);
-    ++nextId;
+    public void registerCharge(ICharge charge) {
+        charge.setID(nextId);
+        charges.put(nextId, charge);
+        ++nextId;
 
-  }
+    }
 
-  public ICharge getCharge(int id) {
-    return charges.get(id);
-  }
+    public ICharge getCharge(int id) {
+        return charges.get(id);
+    }
 
 }

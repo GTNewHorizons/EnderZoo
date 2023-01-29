@@ -7,22 +7,20 @@ import net.minecraft.world.World;
 
 public class CommonProxy {
 
-  public CommonProxy() {
-  }
+    public CommonProxy() {}
 
-  public World getClientWorld() {
-    return null;
-  }
+    public World getClientWorld() {
+        return null;
+    }
 
-  public EntityPlayer getClientPlayer() {
-    return null;
-  }
+    public EntityPlayer getClientPlayer() {
+        return null;
+    }
 
-  public void load() {
-  }
+    public void load() {}
 
-  public void setInstantConfusionOnPlayer(EntityPlayer ent, int duration) {
-    ent.addPotionEffect(new PotionEffect(Potion.confusion.getId(), duration, 1, true));
-  }
+    public void setInstantConfusionOnPlayer(EntityPlayer ent, int duration) {
+        ent.addPotionEffect(new PotionEffect(Potion.confusion.getId(), duration, 1, true));
+    }
 
 }

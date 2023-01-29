@@ -4,10 +4,10 @@ import net.minecraft.world.biome.BiomeGenBase;
 
 public interface IBiomeFilter {
 
-  void addBiomeDescriptor(IBiomeDescriptor biome);
+    void addBiomeDescriptor(IBiomeDescriptor biome);
 
-  BiomeGenBase[] getMatchedBiomes();
+    BiomeGenBase[] getMatchedBiomes();
 
-  boolean isMatchingBiome(BiomeGenBase bgb);
+    boolean isMatchingBiome(BiomeGenBase bgb);
 
 }
