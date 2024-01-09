@@ -2,11 +2,6 @@ package crazypants.enderzoo.waila;
 
 import java.util.List;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaEntityAccessor;
-import mcp.mobius.waila.api.IWailaEntityProvider;
-import mcp.mobius.waila.api.IWailaRegistrar;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,6 +10,10 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import crazypants.enderzoo.entity.IEnderZooMob;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaEntityAccessor;
+import mcp.mobius.waila.api.IWailaEntityProvider;
+import mcp.mobius.waila.api.IWailaRegistrar;
 
 public class WailaCompat implements IWailaEntityProvider {
 
