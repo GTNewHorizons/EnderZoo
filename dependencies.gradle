@@ -1,5 +1,5 @@
 // Add your dependencies here
 
 dependencies {
-    compileOnly('com.github.GTNewHorizons:waila:1.5.19:api')
+    compileOnly('com.github.GTNewHorizons:waila:1.6.5:api')
 }
