@@ -2,5 +2,5 @@
 
 dependencies {
     compileOnly('com.github.GTNewHorizons:waila:1.6.5:api')
-    compileOnly('com.github.GTNewHorizons:Mobs-Info:0.3.6-GTNH-pre:dev')
+    compileOnly('com.github.GTNewHorizons:Mobs-Info:0.4.0-GTNH:dev')
 }
