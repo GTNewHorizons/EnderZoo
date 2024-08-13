@@ -1,5 +1,9 @@
 package crazypants.enderzoo.entity;
 
+import java.util.ArrayList;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,11 +22,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+import com.kuba6000.mobsinfo.api.IMobInfoProvider;
+import com.kuba6000.mobsinfo.api.MobDrop;
+
+import cpw.mods.fml.common.Optional;
 import crazypants.enderzoo.config.Config;
 import crazypants.enderzoo.entity.ai.EntityAIMountedArrowAttack;
 import crazypants.enderzoo.entity.ai.EntityAIMountedAttackOnCollide;
 
-public class EntityFallenKnight extends EntitySkeleton implements IEnderZooMob {
+@Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobInfoProvider", modid = "mobsinfo")
+public class EntityFallenKnight extends EntitySkeleton implements IEnderZooMob, IMobInfoProvider {
 
     public static final int EGG_FG_COL = 0x365A25;
     public static final int EGG_BG_COL = 0xA0A0A0;
@@ -200,43 +209,6 @@ public class EntityFallenKnight extends EntitySkeleton implements IEnderZooMob {
         return itemstack != null && itemstack.getItem() == Items.bow;
     }
 
-    @Override
-    protected void addRandomArmor() {
-
-        float occupiedDiffcultyMultiplier = EntityUtil.getDifficultyMultiplierForLocation(worldObj, posX, posY, posZ);
-
-        int equipmentLevel = getRandomEquipmentLevel(occupiedDiffcultyMultiplier);
-        int armorLevel = equipmentLevel;
-        if (armorLevel == 1) {
-            // Skip gold armor, I don't like it
-            armorLevel++;
-        }
-
-        float chancePerPiece = isHardDifficulty() ? Config.fallenKnightChancePerArmorPieceHard
-                : Config.fallenKnightChancePerArmorPiece;
-        chancePerPiece *= (1 + occupiedDiffcultyMultiplier); // If we have the max occupied factor, double the chance of
-                                                             // improved armor
-
-        for (int slot = 1; slot < 5; slot++) {
-            ItemStack itemStack = getEquipmentInSlot(slot);
-            if (itemStack == null && rand.nextFloat() <= chancePerPiece) {
-                Item item = EntityLiving.getArmorItemForSlot(slot, armorLevel);
-                if (item != null) {
-                    ItemStack stack = new ItemStack(item);
-                    if (armorLevel == 0) {
-                        ((ItemArmor) item).func_82813_b(stack, 0);
-                    }
-                    setCurrentItemOrArmor(slot, stack);
-                }
-            }
-        }
-        if (rand.nextFloat() > Config.fallenKnightRangedRatio) {
-            setCurrentItemOrArmor(0, getSwordForLevel(equipmentLevel));
-        } else {
-            setCurrentItemOrArmor(0, new ItemStack(Items.bow));
-        }
-    }
-
     private int getRandomEquipmentLevel() {
         return getRandomEquipmentLevel(EntityUtil.getDifficultyMultiplierForLocation(worldObj, posX, posY, posZ));
     }
@@ -254,6 +226,9 @@ public class EntityFallenKnight extends EntitySkeleton implements IEnderZooMob {
             }
         }
         return armorLevel;
+        /*
+         * 8% 3 8% 2 12% 2 12% 2 12% 1 12% 1 18% 1 18% 0 ===== 8% 3 32% 2 42% 1 18% 0
+         */
     }
 
     protected boolean isHardDifficulty() {
@@ -323,7 +298,45 @@ public class EntityFallenKnight extends EntitySkeleton implements IEnderZooMob {
     }
 
     @Override
+    protected void addRandomArmor() {
+        // ANY CHANGE MADE IN HERE MUST ALSO BE MADE IN provideDropsInformation!
+        float occupiedDiffcultyMultiplier = EntityUtil.getDifficultyMultiplierForLocation(worldObj, posX, posY, posZ);
+
+        int equipmentLevel = getRandomEquipmentLevel(occupiedDiffcultyMultiplier);
+        int armorLevel = equipmentLevel;
+        if (armorLevel == 1) {
+            // Skip gold armor, I don't like it
+            armorLevel++;
+        }
+
+        float chancePerPiece = isHardDifficulty() ? Config.fallenKnightChancePerArmorPieceHard
+                : Config.fallenKnightChancePerArmorPiece;
+        chancePerPiece *= (1 + occupiedDiffcultyMultiplier); // If we have the max occupied factor, double the chance of
+        // improved armor
+
+        for (int slot = 1; slot < 5; slot++) {
+            ItemStack itemStack = getEquipmentInSlot(slot);
+            if (itemStack == null && rand.nextFloat() <= chancePerPiece) {
+                Item item = EntityLiving.getArmorItemForSlot(slot, armorLevel);
+                if (item != null) {
+                    ItemStack stack = new ItemStack(item);
+                    if (armorLevel == 0) {
+                        ((ItemArmor) item).func_82813_b(stack, 0);
+                    }
+                    setCurrentItemOrArmor(slot, stack);
+                }
+            }
+        }
+        if (rand.nextFloat() > Config.fallenKnightRangedRatio) {
+            setCurrentItemOrArmor(0, getSwordForLevel(equipmentLevel));
+        } else {
+            setCurrentItemOrArmor(0, new ItemStack(Items.bow));
+        }
+    }
+
+    @Override
     protected void dropFewItems(boolean hitByPlayer, int lootingLevel) {
+        // ANY CHANGE MADE IN HERE MUST ALSO BE MADE IN provideDropsInformation!
         int numDrops = rand.nextInt(3 + lootingLevel);
         for (int i = 0; i < numDrops; ++i) {
             if (rand.nextBoolean()) {
@@ -335,7 +348,76 @@ public class EntityFallenKnight extends EntitySkeleton implements IEnderZooMob {
     }
 
     @Override
-    protected void dropRareDrop(int p_70600_1_) {}
+    protected void dropRareDrop(int p_70600_1_) {
+        // ANY CHANGE MADE IN HERE MUST ALSO BE MADE IN provideDropsInformation!
+    }
+
+    @Optional.Method(modid = "mobsinfo")
+    @Override
+    public void provideDropsInformation(@Nonnull ArrayList<MobDrop> drops) {
+        double chance = MobDrop.getChanceBasedOnFromTo(0, 2) * 0.5d;
+        drops.add(MobDrop.create(Items.bone).withChance(chance).withLooting());
+        drops.add(MobDrop.create(Items.rotten_flesh).withChance(chance).withLooting());
+
+        // armor
+        chance = 0.085d * Config.fallenKnightChancePerArmorPieceHard;
+        double chanceArmor = Config.fallenKnightChanceArmorUpgradeHard;
+        double notChanceArmor = 1d - chanceArmor;
+        final double[] chanceForLevel = { 0.5d * notChanceArmor * notChanceArmor, // 0+0+0
+                0.5d * chanceArmor * notChanceArmor + 0.5d * notChanceArmor * chanceArmor
+                        + 0.5d * notChanceArmor * notChanceArmor, // 0+1+0,0+0+1,1+0+0
+                0.5d * chanceArmor * notChanceArmor + 0.5d * notChanceArmor * chanceArmor
+                        + 0.5d * chanceArmor * chanceArmor, // 1+1+0,1+0+1,0+1+1
+                0.5d * chanceArmor * chanceArmor // 1+1+1
+        };
+
+        for (int slot = 1; slot < 5; slot++) {
+            Item item = EntityLiving.getArmorItemForSlot(slot, 0);
+            ItemStack stack = new ItemStack(item);
+            ((ItemArmor) item).func_82813_b(stack, 0);
+            double dropChance = chance * chanceForLevel[0];
+            drops.add(MobDrop.create(stack).withType(MobDrop.DropType.Additional).withChance(dropChance * 0.5d));
+            drops.add(
+                    MobDrop.create(stack.copy()).withType(MobDrop.DropType.Additional).withChance(dropChance * 0.5d)
+                            .withRandomEnchant(14));
+            // gold is skipped
+            dropChance = chance * (chanceForLevel[1] + chanceForLevel[2]);
+            drops.add(
+                    MobDrop.create(EntityLiving.getArmorItemForSlot(slot, 2)).withType(MobDrop.DropType.Additional)
+                            .withChance(dropChance * 0.5d));
+            drops.add(
+                    MobDrop.create(EntityLiving.getArmorItemForSlot(slot, 2)).withType(MobDrop.DropType.Additional)
+                            .withChance(dropChance * 0.5d).withRandomEnchant(14));
+            dropChance = chance * chanceForLevel[3];
+            drops.add(
+                    MobDrop.create(EntityLiving.getArmorItemForSlot(slot, 3)).withType(MobDrop.DropType.Additional)
+                            .withChance(dropChance * 0.5d));
+            drops.add(
+                    MobDrop.create(EntityLiving.getArmorItemForSlot(slot, 3)).withType(MobDrop.DropType.Additional)
+                            .withChance(dropChance * 0.5d).withRandomEnchant(14));
+        }
+        chance = 0.085d * (1d - Config.fallenKnightRangedRatio) * chanceForLevel[0];
+        drops.add(MobDrop.create(Items.wooden_sword).withType(MobDrop.DropType.Additional).withChance(chance * 0.75d));
+        drops.add(
+                MobDrop.create(Items.wooden_sword).withType(MobDrop.DropType.Additional).withChance(chance * 0.25d)
+                        .withRandomEnchant(14));
+        chance = 0.085d * (1d - Config.fallenKnightRangedRatio) * chanceForLevel[1];
+        drops.add(MobDrop.create(Items.stone_sword).withType(MobDrop.DropType.Additional).withChance(chance * 0.75d));
+        drops.add(
+                MobDrop.create(Items.stone_sword).withType(MobDrop.DropType.Additional).withChance(chance * 0.25d)
+                        .withRandomEnchant(14));
+        chance = 0.085d * (1d - Config.fallenKnightRangedRatio) * (chanceForLevel[2] + chanceForLevel[3]);
+        drops.add(MobDrop.create(Items.iron_sword).withType(MobDrop.DropType.Additional).withChance(chance * 0.75d));
+        drops.add(
+                MobDrop.create(Items.iron_sword).withType(MobDrop.DropType.Additional).withChance(chance * 0.25d)
+                        .withRandomEnchant(14));
+        chance = 0.085d * Config.fallenKnightRangedRatio;
+        drops.add(MobDrop.create(Items.bow).withType(MobDrop.DropType.Additional).withChance(chance * 0.75d));
+        drops.add(
+                MobDrop.create(Items.bow).withType(MobDrop.DropType.Additional).withChance(chance * 0.25d)
+                        .withRandomEnchant(14));
+
+    }
 
     // public boolean attackEntityAsMob(Entity p_70652_1_)
     // {
