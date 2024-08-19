@@ -1,5 +1,6 @@
 // Add your dependencies here
 
 dependencies {
-    compileOnly('com.github.GTNewHorizons:waila:1.6.5:api')
+    compileOnly('com.github.GTNewHorizons:waila:1.8.1:api')
+    compileOnly('com.github.GTNewHorizons:Mobs-Info:0.4.2-GTNH:dev')
 }
