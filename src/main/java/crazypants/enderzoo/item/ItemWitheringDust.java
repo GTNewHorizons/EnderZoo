@@ -2,14 +2,10 @@ package crazypants.enderzoo.item;
 
 import java.util.HashMap;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionHelper;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.world.World;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -48,26 +44,6 @@ public class ItemWitheringDust extends Item {
         } catch (Exception e) {
             Log.error("ItemWitheringDust: Could not register wither potion recipe " + e);
         }
-    }
-
-    // TODO: DEBUG
-    @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
-            float hitX, float hitY, float hitZ) {
-
-        if (world.isRemote) {
-            return true;
-        }
-        Block b = world.getBlock(x, y, z);
-        int meta = world.getBlockMetadata(x, y, z);
-
-        player.addChatComponentMessage(
-                new ChatComponentText(
-                        "ItemWitheringDust.onItemUse: " + GameRegistry.findUniqueIdentifierFor(b) + " meta: " + meta));
-        // System.out.println();
-
-        return true;
-
     }
 
     @Override
