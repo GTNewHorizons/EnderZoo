@@ -47,8 +47,10 @@ public abstract class AbstractBiomeFilter implements IBiomeFilter {
         }
         for (String exName : nameExcludes) {
             if (exName != null && exName.equals(candidate.biomeName)) {
-                System.out.print("Excluded " + candidate.biomeName + ", ");
-                return false;
+                if (Config.spawnConfigPrintDetailedOutput) {
+                    System.out.print("Excluded " + candidate.biomeName + ", ");
+                }
+                return true;
             }
         }
         return false;
