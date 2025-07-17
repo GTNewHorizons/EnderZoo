@@ -31,16 +31,14 @@ public class ItemGuardiansBow extends ItemBow {
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
 
-    private int drawTime = Config.guardiansBowDrawTime;
-    private float damageBonus = Config.guardiansBowDamageBonus;
-    private float forceMultiplier = Config.guardiansBowForceMultiplier;
-    private float fovMultiplier = Config.guardiansBowFovMultiplier;
-    public EventHandler handler;
+    private final int drawTime = Config.guardiansBowDrawTime;
+    private final float damageBonus = Config.guardiansBowDamageBonus;
+    private final float forceMultiplier = Config.guardiansBowForceMultiplier;
+    private final float fovMultiplier = Config.guardiansBowFovMultiplier;
 
     public static ItemGuardiansBow create() {
         ItemGuardiansBow res = new ItemGuardiansBow();
         res.init();
-        MinecraftForge.EVENT_BUS.register(res.handler);
         return res;
     }
 
@@ -50,11 +48,11 @@ public class ItemGuardiansBow extends ItemBow {
         setTextureName("enderzoo:guardiansBow");
         setMaxDamage(800);
         setHasSubtypes(false);
-        handler = new EventHandler();
     }
 
     protected void init() {
         GameRegistry.registerItem(this, NAME);
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     @Override
