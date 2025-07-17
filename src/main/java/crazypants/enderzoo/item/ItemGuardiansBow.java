@@ -31,15 +31,14 @@ public class ItemGuardiansBow extends ItemBow {
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
 
-    private int drawTime = Config.guardiansBowDrawTime;
-    private float damageBonus = Config.guardiansBowDamageBonus;
-    private float forceMultiplier = Config.guardiansBowForceMultiplier;
-    private float fovMultiplier = Config.guardiansBowFovMultiplier;
+    private final int drawTime = Config.guardiansBowDrawTime;
+    private final float damageBonus = Config.guardiansBowDamageBonus;
+    private final float forceMultiplier = Config.guardiansBowForceMultiplier;
+    private final float fovMultiplier = Config.guardiansBowFovMultiplier;
 
     public static ItemGuardiansBow create() {
         ItemGuardiansBow res = new ItemGuardiansBow();
         res.init();
-        MinecraftForge.EVENT_BUS.register(res);
         return res;
     }
 
@@ -53,6 +52,7 @@ public class ItemGuardiansBow extends ItemBow {
 
     protected void init() {
         GameRegistry.registerItem(this, NAME);
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     @Override
@@ -109,26 +109,6 @@ public class ItemGuardiansBow extends ItemBow {
                 world.spawnEntityInWorld(entityarrow);
             }
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onFovUpdateEvent(FOVUpdateEvent fovEvt) {
-        ItemStack currentItem = fovEvt.entity.getCurrentEquippedItem();
-        if (currentItem == null || currentItem.getItem() != this || fovEvt.entity.getItemInUseCount() <= 0) {
-            return;
-        }
-
-        int drawDuration = getMaxItemUseDuration(currentItem) - fovEvt.entity.getItemInUseCount();
-        float ratio = drawDuration / (float) drawTime;
-
-        if (ratio > 1.0F) {
-            ratio = 1.0F;
-        } else {
-            ratio *= ratio;
-        }
-        fovEvt.newfov = (1.0F - ratio * fovMultiplier);
-
     }
 
     @Override
@@ -201,4 +181,28 @@ public class ItemGuardiansBow extends ItemBow {
         return iconArray[useDuration];
     }
 
+    public class EventHandler {
+
+        @SideOnly(Side.CLIENT)
+        @SubscribeEvent
+        public void onFovUpdateEvent(FOVUpdateEvent fovEvt) {
+            ItemStack currentItem = fovEvt.entity.getCurrentEquippedItem();
+            if (currentItem == null || currentItem.getItem() != ItemGuardiansBow.this
+                    || fovEvt.entity.getItemInUseCount() <= 0) {
+                return;
+            }
+
+            int drawDuration = getMaxItemUseDuration(currentItem) - fovEvt.entity.getItemInUseCount();
+            float ratio = drawDuration / (float) drawTime;
+
+            if (ratio > 1.0F) {
+                ratio = 1.0F;
+            } else {
+                ratio *= ratio;
+            }
+            fovEvt.newfov = (1.0F - ratio * fovMultiplier);
+
+        }
+
+    }
 }
