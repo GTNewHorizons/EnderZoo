@@ -35,11 +35,12 @@ public class ItemGuardiansBow extends ItemBow {
     private float damageBonus = Config.guardiansBowDamageBonus;
     private float forceMultiplier = Config.guardiansBowForceMultiplier;
     private float fovMultiplier = Config.guardiansBowFovMultiplier;
+    public EventHandler handler;
 
     public static ItemGuardiansBow create() {
         ItemGuardiansBow res = new ItemGuardiansBow();
         res.init();
-        MinecraftForge.EVENT_BUS.register(res);
+        MinecraftForge.EVENT_BUS.register(res.handler);
         return res;
     }
 
@@ -49,6 +50,7 @@ public class ItemGuardiansBow extends ItemBow {
         setTextureName("enderzoo:guardiansBow");
         setMaxDamage(800);
         setHasSubtypes(false);
+        handler = new EventHandler();
     }
 
     protected void init() {
@@ -109,26 +111,6 @@ public class ItemGuardiansBow extends ItemBow {
                 world.spawnEntityInWorld(entityarrow);
             }
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onFovUpdateEvent(FOVUpdateEvent fovEvt) {
-        ItemStack currentItem = fovEvt.entity.getCurrentEquippedItem();
-        if (currentItem == null || currentItem.getItem() != this || fovEvt.entity.getItemInUseCount() <= 0) {
-            return;
-        }
-
-        int drawDuration = getMaxItemUseDuration(currentItem) - fovEvt.entity.getItemInUseCount();
-        float ratio = drawDuration / (float) drawTime;
-
-        if (ratio > 1.0F) {
-            ratio = 1.0F;
-        } else {
-            ratio *= ratio;
-        }
-        fovEvt.newfov = (1.0F - ratio * fovMultiplier);
-
     }
 
     @Override
@@ -201,4 +183,28 @@ public class ItemGuardiansBow extends ItemBow {
         return iconArray[useDuration];
     }
 
+    public class EventHandler {
+
+        @SideOnly(Side.CLIENT)
+        @SubscribeEvent
+        public void onFovUpdateEvent(FOVUpdateEvent fovEvt) {
+            ItemStack currentItem = fovEvt.entity.getCurrentEquippedItem();
+            if (currentItem == null || currentItem.getItem() != ItemGuardiansBow.this
+                    || fovEvt.entity.getItemInUseCount() <= 0) {
+                return;
+            }
+
+            int drawDuration = getMaxItemUseDuration(currentItem) - fovEvt.entity.getItemInUseCount();
+            float ratio = drawDuration / (float) drawTime;
+
+            if (ratio > 1.0F) {
+                ratio = 1.0F;
+            } else {
+                ratio *= ratio;
+            }
+            fovEvt.newfov = (1.0F - ratio * fovMultiplier);
+
+        }
+
+    }
 }
