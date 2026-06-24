@@ -81,7 +81,11 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void setInstantConfusionOnPlayer(EntityPlayer ent, int duration) {
         ent.addPotionEffect(new PotionEffect(Potion.confusion.getId(), duration, 1, true));
-        Minecraft.getMinecraft().thePlayer.timeInPortal = 1;
+        // Only show the portal screen effect for the local player when they were
+        // actually caught in the blast, not for every client that sees the explosion.
+        if (ent == Minecraft.getMinecraft().thePlayer) {
+            Minecraft.getMinecraft().thePlayer.timeInPortal = 1;
+        }
     }
 
 }
