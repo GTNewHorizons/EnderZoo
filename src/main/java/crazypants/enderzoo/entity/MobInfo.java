@@ -27,6 +27,8 @@ public enum MobInfo {
     DIRE_SLIME(EntityDireSlime.class, EntityDireSlime.NAME, EntityDireSlime.EGG_BG_COL, EntityDireSlime.EGG_FG_COL,
             Config.direSlimeEnabled, Config.direSlimeHealth, Config.direSlimeAttackDamage);
 
+    public static final MobInfo[] VALUES = values();
+
     final Class<? extends EntityLiving> clz;
     final String name;
     final int bgCol;

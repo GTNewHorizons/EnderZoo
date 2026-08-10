@@ -58,9 +58,9 @@ public class ItemSpawnEgg extends Item {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        int damage = MathHelper.clamp_int(stack.getItemDamage(), 0, MobInfo.values().length - 1);
+        int damage = MathHelper.clamp_int(stack.getItemDamage(), 0, MobInfo.VALUES.length - 1);
         String s = ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
-        String s1 = MobInfo.values()[damage].getName();
+        String s1 = MobInfo.VALUES[damage].getName();
         if (s1 != null) {
             s = s + " " + StatCollector.translateToLocal("entity." + s1 + ".name");
         }
@@ -70,7 +70,7 @@ public class ItemSpawnEgg extends Item {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        for (MobInfo mob : MobInfo.values()) {
+        for (MobInfo mob : MobInfo.VALUES) {
             if (mob.isEnabled()) {
                 list.add(new ItemStack(item, 1, mob.ordinal()));
             }
@@ -80,8 +80,8 @@ public class ItemSpawnEgg extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack stack, int pass) {
-        int damage = MathHelper.clamp_int(stack.getItemDamage(), 0, MobInfo.values().length - 1);
-        MobInfo mob = MobInfo.values()[damage];
+        int damage = MathHelper.clamp_int(stack.getItemDamage(), 0, MobInfo.VALUES.length - 1);
+        MobInfo mob = MobInfo.VALUES[damage];
         return pass == 0 ? mob.getEggBackgroundColor() : mob.getEggForegroundColor();
     }
 
@@ -107,8 +107,8 @@ public class ItemSpawnEgg extends Item {
             posY += 0.5;
         }
 
-        int damage = MathHelper.clamp_int(stack.getItemDamage(), 0, MobInfo.values().length - 1);
-        EntityLiving entity = (EntityLiving) EntityList.createEntityByName(MobInfo.values()[damage].getName(), world);
+        int damage = MathHelper.clamp_int(stack.getItemDamage(), 0, MobInfo.VALUES.length - 1);
+        EntityLiving entity = (EntityLiving) EntityList.createEntityByName(MobInfo.VALUES[damage].getName(), world);
         spawnEntity(posX + 0.5, posY, posZ + 0.5, entity, world);
         return entity;
     }

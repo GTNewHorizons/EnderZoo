@@ -73,7 +73,7 @@ public class EnderZoo {
         itemForCreativeMenuIcon = ItemForCreativeMenuIcon.create();
 
         Config.load(event);
-        for (MobInfo mob : MobInfo.values()) {
+        for (MobInfo mob : MobInfo.VALUES) {
             registerEntity(mob);
         }
         itemSpawnEgg = ItemSpawnEgg.create();
